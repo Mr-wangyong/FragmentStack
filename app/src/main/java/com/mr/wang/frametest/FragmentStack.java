@@ -3,6 +3,7 @@ package com.mr.wang.frametest;
 import java.util.ArrayList;
 
 /**
+ * Fragment任务栈
  * User: chengwangyong(chengwangyong@vcinema.com)
  * Date: 2015-12-06
  * Time: 19:39
@@ -13,14 +14,14 @@ public class FragmentStack {
     public static final int SINGLETASK=2;
     public static final int SINGLEINSTANCE=3;
 
-    private ArrayList<ArrayList<BasePresenterFragment>> lists = new ArrayList<>();
-    private ArrayList<BasePresenterFragment> list;
+    private ArrayList<ArrayList<OnNewIntent>> stackList = new ArrayList<>();
+    private ArrayList<OnNewIntent> stack;
 
     public FragmentStack() {
-        if (list==null){
-            list=new ArrayList<>();
+        if (stack ==null){
+            stack =new ArrayList<>();
         }
-        lists.add(list);
+        stackList.add(stack);
     }
 
 
@@ -29,17 +30,17 @@ public class FragmentStack {
      * standard 模式 直接加入到当前的任务栈
      * @param fragment 加入的fragment
      */
-    public void putStandard(BasePresenterFragment fragment){
-        list.add(fragment);
+    public void putStandard(OnNewIntent fragment){
+        stackList.get(stackList.size()-1).add(fragment);
     }
 
     /**
      * SingleTop模式 如果顶部有 则不创建
      * @param fragment 加入的fragment
      */
-    public void putSingleTop(BasePresenterFragment fragment){
-        ArrayList<BasePresenterFragment> lastList = lists.get(lists.size() - 1);
-        BasePresenterFragment last = lastList.get(lastList.size() - 1);
+    public void putSingleTop(OnNewIntent fragment){
+        ArrayList<OnNewIntent> lastList = stackList.get(stackList.size() - 1);
+        OnNewIntent last = lastList.get(lastList.size() - 1);
         if (last!=fragment){
             lastList.add(fragment);
         }else{
@@ -51,8 +52,8 @@ public class FragmentStack {
      * singTask模式 如果当前任务栈中有 则不创建 并清空所有的上层实例
      * @param fragment 加入的fragment
      */
-    public void putSingleTask(BasePresenterFragment fragment){
-        ArrayList<BasePresenterFragment> lastList = lists.get(lists.size() - 1);
+    public void putSingleTask(OnNewIntent fragment){
+        ArrayList<OnNewIntent> lastList = stackList.get(stackList.size() - 1);
         boolean isClear=false;
         for (int x=lastList.size()-1;x>=0;x--){
             if (isClear){
@@ -65,16 +66,24 @@ public class FragmentStack {
                 lastList.add(fragment);
             }
         }
-
     }
 
     /**
      * singleInstance 模式 每次都创建一个新的任务栈
      * @param fragment 加入的fragment
      */
-    public void putSingleInstance(BasePresenterFragment fragment){
-        ArrayList<BasePresenterFragment> frags=new ArrayList<>();
+    public void putSingleInstance(OnNewIntent fragment){
+        ArrayList<OnNewIntent> frags=new ArrayList<>();
         frags.add(fragment);
-        lists.add(frags);
+        stackList.add(frags);
+    }
+
+    public void onBackPressed() {
+        ArrayList<OnNewIntent> lastStack = stackList.get(stackList.size() - 1);
+        if (lastStack==null||lastStack.isEmpty()){
+            stackList.remove(lastStack);
+        }else{
+            lastStack.remove(lastStack.size()-1);
+        }
     }
 }

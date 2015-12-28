@@ -8,10 +8,9 @@ import android.support.v4.app.Fragment;
  * Date: 2015-12-06
  * Time: 20:19
  */
-public class BasePresenterFragment extends Fragment {
+public class BaseFragment extends Fragment implements OnNewIntent{
 
-
-
+    @Override
     public void onNewIntent() {
 
     }
