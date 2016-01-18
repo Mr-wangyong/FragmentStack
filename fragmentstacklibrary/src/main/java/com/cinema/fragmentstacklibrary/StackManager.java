@@ -1,4 +1,4 @@
-package com.mr.wang.frametest;
+package com.cinema.fragmentstacklibrary;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -21,7 +21,7 @@ public class StackManager {
      * 设置点击间隔时间 防止重复点击 默认2s
      * @param CLICK_SPACE 重复点击时间
      */
-    public void setCLICK_SPACE(long CLICK_SPACE) {
+    public void setClickSpace(long CLICK_SPACE) {
         this.CLICK_SPACE = CLICK_SPACE;
     }
 
@@ -42,9 +42,7 @@ public class StackManager {
 
 
 
-    /**
-     * 跳转到指定的fragment
-     */
+
     private void popFragment(Fragment from, Fragment to) {
         if (System.currentTimeMillis()-currentTime>CLICK_SPACE){
             FragmentTransaction transaction = context.getSupportFragmentManager().beginTransaction();
@@ -58,36 +56,48 @@ public class StackManager {
             currentTime=System.currentTimeMillis();
         }
     }
-
-    public void popFragment(BaseFragment from, BaseFragment to, Bundle bundle,int stackMode){
+    /**
+     * 跳转到指定的fragment
+     */
+    public void popFragment(RootFragment from, RootFragment to, Bundle bundle,int stackMode){
         switch (stackMode){
-            case FragmentStack.SINGLETOP:
+            case FragmentStack.SINGLE_TOP:
                 stack.putSingleTop(to);
                 break;
-            case FragmentStack.SINGLETASK:
+            case FragmentStack.SINGLE_TASK:
                 stack.putSingleTask(to);
                 break;
-            case FragmentStack.SINGLEINSTANCE:
+            case FragmentStack.SINGLE_INSTANCE:
                 stack.putSingleInstance(to);
                 break;
             default:
                 stack.putStandard(to);
                 break;
         }
-        to.setArguments(bundle);
+        if (bundle!=null){
+            to.setArguments(bundle);
+        }
         popFragment(from, to);
     }
 
-
+    /**
+     * 跳转到指定的fragment
+     */
+    public void popFragment(RootFragment from, RootFragment to){
+        popFragment(from, to,null,FragmentStack.STANDARD);
+    }
 
     /**
      * 跳转到指定的fragment 带参形式
      */
-    public void popFragment(BaseFragment from, BaseFragment to, Bundle bundle){
+    public void popFragment(RootFragment from, RootFragment to, Bundle bundle){
         popFragment(from, to,bundle,FragmentStack.STANDARD);
     }
 
-
+    /**
+     * 跳转到指定的fragment 并且不隐藏当前页面
+     * @param to 要跳转的页面
+     */
     public void popFragment(Fragment to) {
         FragmentTransaction transaction =  context.getSupportFragmentManager().beginTransaction();
         if (!to.isAdded()) {
@@ -99,16 +109,24 @@ public class StackManager {
         }
     }
 
+    /**
+     * 关闭指定的fragment
+     * @param mTargetFragment fragment
+     */
     public void closeFragment(Fragment mTargetFragment) {
         FragmentTransaction transaction =  context.getSupportFragmentManager().beginTransaction();
         transaction.remove(mTargetFragment).commit();
     }
 
-    public void closeFragment(String name){
-        Fragment fragmentByTag =  context.getSupportFragmentManager().findFragmentByTag(name);
+    /**
+     * 根据tag 关闭指定的fragment
+     * @param tag fragment的tag
+     */
+    public void closeFragment(String tag){
+        Fragment fragmentByTag =  context.getSupportFragmentManager().findFragmentByTag(tag);
         if (fragmentByTag!=null){
             closeFragment(fragmentByTag);
-            context.getSupportFragmentManager().popBackStack(name, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            context.getSupportFragmentManager().popBackStack(tag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
     }
 
@@ -116,6 +134,10 @@ public class StackManager {
         context.getSupportFragmentManager().popBackStack();
     }
 
+
+    /**
+     * 关闭所有的fragment
+     */
     public void closeAllFragment() {
         int backStackCount =  context.getSupportFragmentManager().getBackStackEntryCount();
         for (int i = 0; i < backStackCount; i++) {

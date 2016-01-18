@@ -1,4 +1,4 @@
-package com.mr.wang.frametest;
+package com.cinema.fragmentstacklibrary;
 
 import java.util.ArrayList;
 
@@ -10,9 +10,10 @@ import java.util.ArrayList;
  */
 public class FragmentStack {
     public static final int STANDARD=0;
-    public static final int SINGLETOP=1;
-    public static final int SINGLETASK=2;
-    public static final int SINGLEINSTANCE=3;
+    public static final int SINGLE_TOP =1;
+    public static final int SINGLE_TASK =2;
+    public static final int SINGLE_INSTANCE=3;
+
 
     private ArrayList<ArrayList<OnNewIntent>> stackList = new ArrayList<>();
     private ArrayList<OnNewIntent> stack;
