@@ -105,33 +105,58 @@ public class FragmentStack {
     }
 
     public void onBackPressed() {
-
         int i = stackList.size() - 1;
         if (i >= 0) {
             ArrayList<RootFragment> lastStack = stackList.get(i);
-            if (lastStack == null || lastStack.isEmpty()) {
-                stackList.remove(lastStack);
-            } else {
+            if (lastStack != null && (!lastStack.isEmpty())) {
                 lastStack.remove(lastStack.size() - 1);
+                if (lastStack.isEmpty()){
+                    stackList.remove(lastStack);
+                }
+            } else {
+                stackList.remove(lastStack);
             }
         } else {
             stackList.clear();
         }
-
+//        int i = stackList.size() - 1;
+//        if (i >= 0) {
+//            ArrayList<RootFragment> lastStack = stackList.get(i);
+//            if (lastStack == null || lastStack.isEmpty()) {
+//                stackList.remove(lastStack);
+//            } else {
+//                lastStack.remove(lastStack.size() - 1);
+//            }
+//        } else {
+//
+//        }
     }
 
     public void setCloseFragmentListener(CloseFragment listener) {
         this.listener = listener;
     }
 
-    public Fragment getLast() {
+    public Fragment[] getLast() {
+        Fragment[] fagArr = new Fragment[2];
+        boolean hasFirst = false;
         for (int x = stackList.size() - 1; x >= 0; x--) {
             ArrayList<RootFragment> list = stackList.get(x);
             if (list != null && (!list.isEmpty())) {
-                return list.get(list.size()-1);
+                if (hasFirst) {
+                    fagArr[1] = list.get(list.size() - 1);
+                    break;
+                } else {
+                    hasFirst = true;
+                    fagArr[0] = list.get(list.size() - 1);
+                    if (list.size() > 1) {
+                        fagArr[1] = list.get(list.size() - 2);
+                    }
+                }
+
             }
         }
-        return null;
+        //return list.get(list.size()-1);
+        return fagArr;
     }
 
     public Fragment getSecondLast() {
@@ -149,8 +174,8 @@ public class FragmentStack {
 
         for (int x = stackList.size() - 1; x >= 0; x--) {
             ArrayList<RootFragment> list = stackList.get(x);
-            if (list != null && (!list.isEmpty()) && list.size()>1) {
-                return list.get(list.size()-2);
+            if (list != null && (!list.isEmpty())) {
+                return list.get(list.size() - 2);
             }
         }
         return null;

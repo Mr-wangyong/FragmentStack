@@ -40,8 +40,8 @@ public class StackManager implements CloseFragment {
         stack = new FragmentStack();
         stack.setCloseFragmentListener(this);
         this.context = context;
-        next_in = AnimationUtils.loadAnimation(context, R.anim.next_in);
-        next_out = AnimationUtils.loadAnimation(context, R.anim.next_out);
+        next_in = AnimationUtils.loadAnimation(context, R.anim.next_in2);
+        next_out = AnimationUtils.loadAnimation(context, R.anim.next_out2);
         pop_enter = AnimationUtils.loadAnimation(context, R.anim.pop_enter);
         pop_exit = AnimationUtils.loadAnimation(context, R.anim.pop_exit);
     }
@@ -181,9 +181,14 @@ public class StackManager implements CloseFragment {
     }
 
     public void onBackPressed() {
-        final Fragment from = stack.getLast();
-        Fragment to = stack.getSecondLast();
+        Fragment[] last = stack.getLast();
+        final Fragment from = last[0];
+        Fragment to = last[1];
         if (from != null) {
+            if (to!=null){
+                FragmentTransaction transaction = context.getSupportFragmentManager().beginTransaction();
+                transaction.show(to).commit();
+            }
             View fromVie = from.getView();
             if (fromVie != null) {
                 fromVie.startAnimation(next_out);
@@ -195,6 +200,7 @@ public class StackManager implements CloseFragment {
 
                     @Override
                     public void onAnimationEnd(Animation animation) {
+                        stack.onBackPressed();
                         closeFragment(from);
                     }
 
@@ -214,7 +220,7 @@ public class StackManager implements CloseFragment {
             closeAllFragment();
             context.finish();
         }
-        stack.onBackPressed();
+
     }
 
 
