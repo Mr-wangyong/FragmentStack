@@ -1,9 +1,7 @@
 package com.cinema.fragmentstacklibrary;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
@@ -23,7 +21,7 @@ public abstract class RootActivity extends AppCompatActivity {
         frameLayout.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         frameLayout.setId(R.id.framLayoutId);
         setContentView(frameLayout);
-        Fragment fragment=getRootFragment();
+        RootFragment fragment=getRootFragment();
         manager=new StackManager(this);
         manager.setFragment(fragment);
         onCreateNow(savedInstanceState);
@@ -38,7 +36,6 @@ public abstract class RootActivity extends AppCompatActivity {
     /**
      * 重写的onCreate方法
      * @param savedInstanceState savedInstanceState
-     * @param persistentState persistentState
      */
     public  void onCreateNow(Bundle savedInstanceState){
 
@@ -52,7 +49,7 @@ public abstract class RootActivity extends AppCompatActivity {
         switch (keyCode){
             case KeyEvent.KEYCODE_BACK:
                 manager.onBackPressed();
-                break;
+                return true;
             default:
                 if (callBack!=null){
                     return callBack.onKeyDown(keyCode,event);

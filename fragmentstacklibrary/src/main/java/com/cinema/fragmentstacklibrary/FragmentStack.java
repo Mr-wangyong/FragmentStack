@@ -1,5 +1,7 @@
 package com.cinema.fragmentstacklibrary;
 
+import android.support.v4.app.Fragment;
+
 import java.util.ArrayList;
 
 /**
@@ -67,21 +69,21 @@ public class FragmentStack {
             lastList.add(fragment);
         } else {
             boolean isClear = false;
-            int tempIndex=0;
+            int tempIndex = 0;
             for (int x = 0; x <= lastList.size() - 1; x++) {
                 if (lastList.get(x).getClass().getName().equals(fragment.getClass().getName())) {
                     //clear all instance
                     isClear = true;
-                    tempIndex=x;
+                    tempIndex = x;
                     break;
                 }
             }
             if (!isClear) {
                 lastList.add(fragment);
-            }else{
+            } else {
                 int count = lastList.size() - 1;
-                for (int i=tempIndex+1;i<=count;i++){
-                    if (listener!=null){
+                for (int i = tempIndex + 1; i <= count; i++) {
+                    if (listener != null) {
                         listener.close(lastList.get(i).getClass().getName());
                     }
                     lastList.remove(i);
@@ -103,6 +105,7 @@ public class FragmentStack {
     }
 
     public void onBackPressed() {
+
         int i = stackList.size() - 1;
         if (i >= 0) {
             ArrayList<RootFragment> lastStack = stackList.get(i);
@@ -116,8 +119,40 @@ public class FragmentStack {
         }
 
     }
+
     public void setCloseFragmentListener(CloseFragment listener) {
-        this.listener=listener;
+        this.listener = listener;
     }
 
+    public Fragment getLast() {
+        for (int x = stackList.size() - 1; x >= 0; x--) {
+            ArrayList<RootFragment> list = stackList.get(x);
+            if (list != null && (!list.isEmpty())) {
+                return list.get(list.size()-1);
+            }
+        }
+        return null;
+    }
+
+    public Fragment getSecondLast() {
+//        int i = stackList.size() - 2;
+//        if (i >= 0) {
+//            ArrayList<RootFragment> lastStack = stackList.get(i);
+//            if (lastStack == null || lastStack.isEmpty()) {
+//                return null;
+//            } else {
+//                return lastStack.get(lastStack.size() - 1);
+//            }
+//        } else {
+//            return null;
+//        }
+
+        for (int x = stackList.size() - 1; x >= 0; x--) {
+            ArrayList<RootFragment> list = stackList.get(x);
+            if (list != null && (!list.isEmpty()) && list.size()>1) {
+                return list.get(list.size()-2);
+            }
+        }
+        return null;
+    }
 }

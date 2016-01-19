@@ -1,10 +1,14 @@
 package com.cinema.fragmentstacklibrary;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 /**
  * User: chengwangyong(chengwangyong@vcinema.com)
@@ -17,6 +21,10 @@ public class StackManager implements CloseFragment {
     private long CLICK_SPACE = 500;
     private long currentTime;
     private int currentMode;
+    private final Animation next_in;
+    private final Animation next_out;
+    private final Animation pop_exit;
+    private final Animation pop_enter;
 
     /**
      * 设置点击间隔时间 防止重复点击 默认500ms
@@ -32,31 +40,49 @@ public class StackManager implements CloseFragment {
         stack = new FragmentStack();
         stack.setCloseFragmentListener(this);
         this.context = context;
+        next_in = AnimationUtils.loadAnimation(context, R.anim.next_in);
+        next_out = AnimationUtils.loadAnimation(context, R.anim.next_out);
+        pop_enter = AnimationUtils.loadAnimation(context, R.anim.pop_enter);
+        pop_exit = AnimationUtils.loadAnimation(context, R.anim.pop_exit);
     }
 
     /**
      * 设置底层的fragment
      */
-    public void setFragment(Fragment mTargetFragment) {
+    public void setFragment(@NonNull RootFragment mTargetFragment) {
         FragmentTransaction transaction = context.getSupportFragmentManager().beginTransaction();
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.framLayoutId, mTargetFragment, mTargetFragment.getClass().getName())
                 .commit();
+        stack.putStandard(mTargetFragment);
     }
 
 
-    public void popFragment(Fragment from, Fragment to) {
+    public void popFragment(@NonNull final Fragment from, @NonNull final Fragment to) {
         if (System.currentTimeMillis() - currentTime > CLICK_SPACE) {
+            currentTime = System.currentTimeMillis();
             FragmentTransaction transaction = context.getSupportFragmentManager().beginTransaction();
             transaction
                     .setCustomAnimations(R.anim.next_in, R.anim.next_out, R.anim.pop_enter, R.anim.pop_exit)//必须在add、remove、replace调用之前被设置，否则不起作用。
                     .add(R.id.framLayoutId, to, to.getClass().getName())
                     .setCustomAnimations(R.anim.next_in, R.anim.next_out, R.anim.pop_enter, R.anim.pop_exit)
                     .hide(from)
-                    .addToBackStack(to.getClass().getName())
+                    //.addToBackStack(to.getClass().getName())
                     .commit();
-            currentTime = System.currentTimeMillis();
+
+//
+//            View fromVie = from.getView();
+//            View toView = to.getView();
+//            if (fromVie != null) {
+//                fromVie.startAnimation(next_out);
+//            }
+//            if (toView != null) {
+//                toView.startAnimation(next_in);
+//            }
+
         }
+
+
     }
 
 
@@ -110,7 +136,7 @@ public class StackManager implements CloseFragment {
             transaction
                     .setCustomAnimations(R.anim.dialog_in, R.anim.dialog_out)
                     .add(R.id.framLayoutId, to, to.getClass().getName())
-                    .addToBackStack(to.getClass().getName())
+                    //.addToBackStack(to.getClass().getName())
                     .commit();
         }
     }
@@ -134,7 +160,7 @@ public class StackManager implements CloseFragment {
         Fragment fragmentByTag = context.getSupportFragmentManager().findFragmentByTag(tag);
         if (fragmentByTag != null) {
             closeFragment(fragmentByTag);
-            context.getSupportFragmentManager().popBackStack(tag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            context.getSupportFragmentManager().popBackStackImmediate(tag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
     }
 
@@ -155,9 +181,41 @@ public class StackManager implements CloseFragment {
     }
 
     public void onBackPressed() {
+        final Fragment from = stack.getLast();
+        Fragment to = stack.getSecondLast();
+        if (from != null) {
+            View fromVie = from.getView();
+            if (fromVie != null) {
+                fromVie.startAnimation(next_out);
+                next_out.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        closeFragment(from);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+            }
+        }
+        if (to != null) {
+            View toView = to.getView();
+            if (toView != null) {
+                toView.startAnimation(next_in);
+            }
+        }else{
+            closeAllFragment();
+            context.finish();
+        }
         stack.onBackPressed();
     }
-
 
 
     @Override
