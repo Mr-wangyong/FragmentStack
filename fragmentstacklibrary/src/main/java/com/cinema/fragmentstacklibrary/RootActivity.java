@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 /**
- * 
+ * extends this Activity to manage multiple fragment
  * User: chengwangyong(cwy545177162@163.com)
  * Date: 2016-01-19
  * Time: 18:32
