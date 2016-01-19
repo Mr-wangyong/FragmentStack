@@ -42,19 +42,24 @@ public class FragmentStack {
      * SingleTop模式 如果顶部有 则不创建
      *
      * @param fragment 加入的fragment
+     * @return 是否含有当前的实例
      */
-    public void putSingleTop(RootFragment fragment) {
+    public boolean putSingleTop(RootFragment fragment) {
         ArrayList<RootFragment> lastList = stackList.get(stackList.size() - 1);
         if (lastList.isEmpty()) {
             lastList.add(fragment);
+            return false;
         } else {
             RootFragment last = lastList.get(lastList.size() - 1);
             if (last.getClass().getName().equals(fragment.getClass().getName())) {
                 fragment.onNewIntent();
+                return true;
             } else {
                 lastList.add(fragment);
+                return false;
             }
         }
+
 
     }
 
@@ -62,13 +67,14 @@ public class FragmentStack {
      * singTask模式 如果当前任务栈中有 则不创建 并清空所有的上层实例
      *
      * @param fragment 加入的fragment
+     * @return 是否含有当前的实例
      */
-    public void putSingleTask(RootFragment fragment) {
+    public boolean putSingleTask(RootFragment fragment) {
+        boolean isClear = false;
         ArrayList<RootFragment> lastList = stackList.get(stackList.size() - 1);
         if (lastList.isEmpty()) {
             lastList.add(fragment);
         } else {
-            boolean isClear = false;
             int tempIndex = 0;
             for (int x = 0; x <= lastList.size() - 1; x++) {
                 if (lastList.get(x).getClass().getName().equals(fragment.getClass().getName())) {
@@ -81,15 +87,20 @@ public class FragmentStack {
             if (!isClear) {
                 lastList.add(fragment);
             } else {
-                int count = lastList.size() - 1;
-                for (int i = tempIndex + 1; i <= count; i++) {
-                    if (listener != null) {
-                        listener.close(lastList.get(i).getClass().getName());
+                if (listener!=null){
+                    listener.show(lastList.get(tempIndex));
+                    StackManager.isFirstClose=true;
+                    for (int i = lastList.size()-1; i >tempIndex ; i--) {
+                        listener.close(lastList.get(i));
                     }
-                    lastList.remove(i);
+                    for (int j = lastList.size()-1; j >tempIndex ; j--) {
+                        lastList.remove(j);
+                    }
                 }
+
             }
         }
+        return isClear;
 
     }
 
@@ -110,7 +121,7 @@ public class FragmentStack {
             ArrayList<RootFragment> lastStack = stackList.get(i);
             if (lastStack != null && (!lastStack.isEmpty())) {
                 lastStack.remove(lastStack.size() - 1);
-                if (lastStack.isEmpty()){
+                if (lastStack.isEmpty()) {
                     stackList.remove(lastStack);
                 }
             } else {
@@ -159,25 +170,25 @@ public class FragmentStack {
         return fagArr;
     }
 
-    public Fragment getSecondLast() {
-//        int i = stackList.size() - 2;
-//        if (i >= 0) {
-//            ArrayList<RootFragment> lastStack = stackList.get(i);
-//            if (lastStack == null || lastStack.isEmpty()) {
-//                return null;
-//            } else {
-//                return lastStack.get(lastStack.size() - 1);
+//    public Fragment getSecondLast() {
+////        int i = stackList.size() - 2;
+////        if (i >= 0) {
+////            ArrayList<RootFragment> lastStack = stackList.get(i);
+////            if (lastStack == null || lastStack.isEmpty()) {
+////                return null;
+////            } else {
+////                return lastStack.get(lastStack.size() - 1);
+////            }
+////        } else {
+////            return null;
+////        }
+//
+//        for (int x = stackList.size() - 1; x >= 0; x--) {
+//            ArrayList<RootFragment> list = stackList.get(x);
+//            if (list != null && (!list.isEmpty())) {
+//                return list.get(list.size() - 2);
 //            }
-//        } else {
-//            return null;
 //        }
-
-        for (int x = stackList.size() - 1; x >= 0; x--) {
-            ArrayList<RootFragment> list = stackList.get(x);
-            if (list != null && (!list.isEmpty())) {
-                return list.get(list.size() - 2);
-            }
-        }
-        return null;
-    }
+//        return null;
+//    }
 }

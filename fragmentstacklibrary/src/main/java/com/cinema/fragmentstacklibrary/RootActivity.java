@@ -7,7 +7,12 @@ import android.view.KeyEvent;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-
+/**
+ * 
+ * User: chengwangyong(cwy545177162@163.com)
+ * Date: 2016-01-19
+ * Time: 18:32
+ */
 public abstract class RootActivity extends AppCompatActivity {
 
     public StackManager manager;
@@ -21,38 +26,38 @@ public abstract class RootActivity extends AppCompatActivity {
         frameLayout.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         frameLayout.setId(R.id.framLayoutId);
         setContentView(frameLayout);
-        RootFragment fragment=getRootFragment();
-        manager=new StackManager(this);
+        RootFragment fragment = getRootFragment();
+        manager = new StackManager(this);
         manager.setFragment(fragment);
         onCreateNow(savedInstanceState);
     }
 
     /**
      * 设置最底层的fragment
-     * @return  fragment
+     *
+     * @return fragment
      */
     protected abstract RootFragment getRootFragment();
 
     /**
      * 重写的onCreate方法
+     *
      * @param savedInstanceState savedInstanceState
      */
-    public  void onCreateNow(Bundle savedInstanceState){
+    public void onCreateNow(Bundle savedInstanceState) {
 
     }
 
 
-
-
     @Override
     public final boolean onKeyDown(int keyCode, KeyEvent event) {
-        switch (keyCode){
+        switch (keyCode) {
             case KeyEvent.KEYCODE_BACK:
                 manager.onBackPressed();
                 return true;
             default:
-                if (callBack!=null){
-                    return callBack.onKeyDown(keyCode,event);
+                if (callBack != null) {
+                    return callBack.onKeyDown(keyCode, event);
                 }
                 break;
         }
@@ -61,12 +66,12 @@ public abstract class RootActivity extends AppCompatActivity {
 
     /**
      * 设置键盘点击回调
+     *
      * @param callBack 回调
      */
-    public void setKeyCallBack(KeyCallBack callBack){
+    public void setKeyCallBack(KeyCallBack callBack) {
         this.callBack = callBack;
     }
-
 
 
 }

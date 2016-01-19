@@ -67,22 +67,8 @@ public class StackManager implements CloseFragment {
                     .add(R.id.framLayoutId, to, to.getClass().getName())
                     .setCustomAnimations(R.anim.next_in, R.anim.next_out, R.anim.pop_enter, R.anim.pop_exit)
                     .hide(from)
-                    //.addToBackStack(to.getClass().getName())
                     .commit();
-
-//
-//            View fromVie = from.getView();
-//            View toView = to.getView();
-//            if (fromVie != null) {
-//                fromVie.startAnimation(next_out);
-//            }
-//            if (toView != null) {
-//                toView.startAnimation(next_in);
-//            }
-
         }
-
-
     }
 
 
@@ -93,24 +79,31 @@ public class StackManager implements CloseFragment {
         if (stackMode != 0) {
             currentMode = stackMode;
         }
-        switch (currentMode) {
-            case FragmentStack.SINGLE_TOP:
-                stack.putSingleTop(to);
-                break;
-            case FragmentStack.SINGLE_TASK:
-                stack.putSingleTask(to);
-                break;
-            case FragmentStack.SINGLE_INSTANCE:
-                stack.putSingleInstance(to);
-                break;
-            default:
-                stack.putStandard(to);
-                break;
-        }
         if (bundle != null) {
             to.setArguments(bundle);
         }
-        popFragment(from, to);
+        switch (currentMode) {
+            case FragmentStack.SINGLE_TOP:
+                if (!stack.putSingleTop(to)){
+                    popFragment(from, to);
+                }
+                break;
+            case FragmentStack.SINGLE_TASK:
+                if (!stack.putSingleTask(to)){
+                    popFragment(from, to);
+                }
+                break;
+            case FragmentStack.SINGLE_INSTANCE:
+                stack.putSingleInstance(to);
+                popFragment(from, to);
+                break;
+            default:
+                stack.putStandard(to);
+                popFragment(from, to);
+                break;
+        }
+
+
     }
 
 
@@ -223,9 +216,45 @@ public class StackManager implements CloseFragment {
 
     }
 
+    public static boolean isFirstClose=true;
+    @Override
+    public void close(final RootFragment fragment) {
+        if (isFirstClose){
+            View view = fragment.getView();
+            if (view != null){
+                view.startAnimation(next_out);
+                next_out.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        closeFragment(fragment);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+
+            }
+            isFirstClose=false;
+        }else{
+            closeFragment(fragment);
+        }
+
+    }
 
     @Override
-    public void close(String tag) {
-        closeFragment(tag);
+    public void show(RootFragment fragment) {
+        FragmentTransaction transaction = context.getSupportFragmentManager().beginTransaction();
+        transaction.show(fragment).commit();
+        View view = fragment.getView();
+        if (view != null){
+            view.startAnimation(next_in);
+        }
     }
 }
