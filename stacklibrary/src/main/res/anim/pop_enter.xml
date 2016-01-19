@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?><!--前一个页面进入-->
+<translate xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="500"
+    android:fromXDelta="-100%p"
+    android:fromYDelta="0"
+    android:repeatCount="0"
+    android:toXDelta="0"
+    android:toYDelta="0" />

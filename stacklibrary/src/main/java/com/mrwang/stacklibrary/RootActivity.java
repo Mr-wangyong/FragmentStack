@@ -1,4 +1,4 @@
-package com.cinema.fragmentstacklibrary;
+package com.mrwang.stacklibrary;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

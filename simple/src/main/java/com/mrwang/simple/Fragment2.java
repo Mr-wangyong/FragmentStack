@@ -1,4 +1,4 @@
-package com.stack.simple.fragment;
+package com.mrwang.simple;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cinema.fragmentstacklibrary.RootFragment;
-import com.mr.wang.frametest.R;
 
 /**
  * User: chengwangyong(chengwangyong@vcinema.com)

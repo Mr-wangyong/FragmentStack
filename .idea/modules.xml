@@ -3,8 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/FragmentTask.iml" filepath="$PROJECT_DIR$/FragmentTask.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/fragmentstacklibrary/fragmentstacklibrary.iml" filepath="$PROJECT_DIR$/fragmentstacklibrary/fragmentstacklibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/simple/simple.iml" filepath="$PROJECT_DIR$/simple/simple.iml" />
+      <module fileurl="file://$PROJECT_DIR$/stacklibrary/stacklibrary.iml" filepath="$PROJECT_DIR$/stacklibrary/stacklibrary.iml" />
     </modules>
   </component>
 </project>
