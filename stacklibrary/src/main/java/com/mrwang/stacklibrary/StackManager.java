@@ -11,7 +11,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 /**
- * User: chengwangyong(chengwangyong@vcinema.com)
+ * Fragment task stack manager
+ * User: chengwangyong(cwy545177162@163.com)
  * Date: 2015-12-06
  * Time: 20:25
  */
@@ -23,11 +24,9 @@ public class StackManager implements CloseFragment {
     private int currentMode;
     private final Animation next_in;
     private final Animation next_out;
-    private final Animation pop_exit;
-    private final Animation pop_enter;
 
     /**
-     * 设置点击间隔时间 防止重复点击 默认500ms
+     * Set the time to click to Prevent repeated clicks,default 500ms
      *
      * @param CLICK_SPACE 重复点击时间
      */
@@ -42,12 +41,10 @@ public class StackManager implements CloseFragment {
         this.context = context;
         next_in = AnimationUtils.loadAnimation(context, R.anim.next_in2);
         next_out = AnimationUtils.loadAnimation(context, R.anim.next_out2);
-        pop_enter = AnimationUtils.loadAnimation(context, R.anim.pop_enter);
-        pop_exit = AnimationUtils.loadAnimation(context, R.anim.pop_exit);
     }
 
     /**
-     * 设置底层的fragment
+     * Set the bottom of the fragment
      */
     public void setFragment(@NonNull RootFragment mTargetFragment) {
         FragmentTransaction transaction = context.getSupportFragmentManager().beginTransaction();
@@ -57,7 +54,9 @@ public class StackManager implements CloseFragment {
         stack.putStandard(mTargetFragment);
     }
 
-
+    /**
+     * Jump to the specified fragment
+     */
     public void popFragment(@NonNull final Fragment from, @NonNull final Fragment to) {
         if (System.currentTimeMillis() - currentTime > CLICK_SPACE) {
             currentTime = System.currentTimeMillis();
@@ -73,7 +72,7 @@ public class StackManager implements CloseFragment {
 
 
     /**
-     * 跳转到指定的fragment
+     * Jump to the specified fragment
      */
     public void popFragment(RootFragment from, RootFragment to, Bundle bundle, int stackMode) {
         if (stackMode != 0) {
@@ -84,12 +83,12 @@ public class StackManager implements CloseFragment {
         }
         switch (currentMode) {
             case FragmentStack.SINGLE_TOP:
-                if (!stack.putSingleTop(to)){
+                if (!stack.putSingleTop(to)) {
                     popFragment(from, to);
                 }
                 break;
             case FragmentStack.SINGLE_TASK:
-                if (!stack.putSingleTask(to)){
+                if (!stack.putSingleTask(to)) {
                     popFragment(from, to);
                 }
                 break;
@@ -112,16 +111,16 @@ public class StackManager implements CloseFragment {
     }
 
     /**
-     * 跳转到指定的fragment 带参形式
+     * Jump to the specified fragment with a parameter form
      */
     public void popFragment(RootFragment from, RootFragment to, Bundle bundle) {
         popFragment(from, to, bundle, 0);
     }
 
     /**
-     * 跳转到指定的fragment 并且不隐藏当前页面
+     * Jump to the specified fragment and do not hide the current page.
      *
-     * @param to 要跳转的页面
+     * @param to To jump to the page
      */
     public void popFragment(Fragment to) {
         FragmentTransaction transaction = context.getSupportFragmentManager().beginTransaction();
@@ -129,13 +128,13 @@ public class StackManager implements CloseFragment {
             transaction
                     .setCustomAnimations(R.anim.dialog_in, R.anim.dialog_out)
                     .add(R.id.framLayoutId, to, to.getClass().getName())
-                    //.addToBackStack(to.getClass().getName())
+                            //.addToBackStack(to.getClass().getName())
                     .commit();
         }
     }
 
     /**
-     * 关闭指定的fragment
+     * Closes the specified fragment
      *
      * @param mTargetFragment fragment
      */
@@ -145,9 +144,9 @@ public class StackManager implements CloseFragment {
     }
 
     /**
-     * 根据tag 关闭指定的fragment
+     * Close the specified fragment by tag
      *
-     * @param tag fragment的tag
+     * @param tag fragment tag
      */
     public void closeFragment(String tag) {
         Fragment fragmentByTag = context.getSupportFragmentManager().findFragmentByTag(tag);
@@ -163,7 +162,7 @@ public class StackManager implements CloseFragment {
 
 
     /**
-     * 关闭所有的fragment
+     * Close all fragment
      */
     public void closeAllFragment() {
         int backStackCount = context.getSupportFragmentManager().getBackStackEntryCount();
@@ -178,7 +177,7 @@ public class StackManager implements CloseFragment {
         final Fragment from = last[0];
         Fragment to = last[1];
         if (from != null) {
-            if (to!=null){
+            if (to != null) {
                 FragmentTransaction transaction = context.getSupportFragmentManager().beginTransaction();
                 transaction.show(to).commit();
             }
@@ -209,19 +208,20 @@ public class StackManager implements CloseFragment {
             if (toView != null) {
                 toView.startAnimation(next_in);
             }
-        }else{
+        } else {
             closeAllFragment();
             context.finish();
         }
 
     }
 
-    public static boolean isFirstClose=true;
+    public static boolean isFirstClose = true;
+
     @Override
     public void close(final RootFragment fragment) {
-        if (isFirstClose){
+        if (isFirstClose) {
             View view = fragment.getView();
-            if (view != null){
+            if (view != null) {
                 view.startAnimation(next_out);
                 next_out.setAnimationListener(new Animation.AnimationListener() {
                     @Override
@@ -241,8 +241,8 @@ public class StackManager implements CloseFragment {
                 });
 
             }
-            isFirstClose=false;
-        }else{
+            isFirstClose = false;
+        } else {
             closeFragment(fragment);
         }
 
@@ -253,7 +253,7 @@ public class StackManager implements CloseFragment {
         FragmentTransaction transaction = context.getSupportFragmentManager().beginTransaction();
         transaction.show(fragment).commit();
         View view = fragment.getView();
-        if (view != null){
+        if (view != null) {
             view.startAnimation(next_in);
         }
     }

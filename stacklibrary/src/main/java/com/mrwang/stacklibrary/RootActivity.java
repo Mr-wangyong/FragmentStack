@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 /**
- *  extends this Activity to manage multiple fragment
+ * extends  this Activity to facilitate the management of multiple fragment instances
  * User: chengwangyong(cwy545177162@163.com)
  * Date: 2016-01-19
  * Time: 18:32
@@ -16,7 +16,7 @@ import android.widget.FrameLayout;
 public abstract class RootActivity extends AppCompatActivity {
 
     public StackManager manager;
-    private KeyCallBack callBack;
+    public KeyCallBack callBack;
 
 
     @Override
@@ -33,14 +33,14 @@ public abstract class RootActivity extends AppCompatActivity {
     }
 
     /**
-     * 设置最底层的fragment
+     * Set the bottom of the fragment
      *
      * @return fragment
      */
     protected abstract RootFragment getRootFragment();
 
     /**
-     * 重写的onCreate方法
+     * Rewriting onCreate method
      *
      * @param savedInstanceState savedInstanceState
      */
@@ -65,9 +65,8 @@ public abstract class RootActivity extends AppCompatActivity {
     }
 
     /**
-     * 设置键盘点击回调
-     *
-     * @param callBack 回调
+     * Set button to click callback
+     * @param callBack callback
      */
     public void setKeyCallBack(KeyCallBack callBack) {
         this.callBack = callBack;

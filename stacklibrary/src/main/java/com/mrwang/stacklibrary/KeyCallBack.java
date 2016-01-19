@@ -3,7 +3,8 @@ package com.mrwang.stacklibrary;
 import android.view.KeyEvent;
 
 /**
- * User: chengwangyong(chengwangyong@vcinema.com)
+ * Intercept key event callback
+ * User: chengwangyong(cwy545177162@163.com)
  * Date: 2015-10-14
  * Time: 21:41
  */
