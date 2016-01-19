@@ -12,7 +12,7 @@ import android.support.v4.app.FragmentActivity;
 public abstract class RootFragment extends Fragment implements OnNewIntent {
 
     public void open(RootFragment fragment) {
-        getRoot().manager.popFragment(this, fragment);
+        getRoot().manager.popFragment(this,fragment,null);
     }
 
     public void open(RootFragment fragment, Bundle bundle) {
