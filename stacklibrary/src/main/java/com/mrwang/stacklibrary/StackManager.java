@@ -1,7 +1,7 @@
 package com.mrwang.stacklibrary;
 
 import android.os.Bundle;
-import android.support.annotation.AnimatorRes;
+import android.support.annotation.AnimRes;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -29,6 +29,8 @@ public class StackManager implements CloseFragment {
     private int quitOut;
     private Animation next_in;
     private Animation next_out;
+    private int dialog_in;
+    private int dialog_out;
 
     /**
      * Set the time to click to Prevent repeated clicks,default 500ms
@@ -68,9 +70,9 @@ public class StackManager implements CloseFragment {
             FragmentTransaction transaction = context.getSupportFragmentManager().beginTransaction();
             if (nextIn != 0 && nextOut != 0 && quitIn != 0 && quitOut != 0) {
                 transaction
-                        .setCustomAnimations(nextIn, nextOut, quitIn, quitIn)
+                        .setCustomAnimations(nextIn, nextOut)
                         .add(R.id.framLayoutId, to, to.getClass().getName())
-                        .setCustomAnimations(nextIn, nextOut, quitIn, quitIn)
+                        .setCustomAnimations(nextIn, nextOut)
                         .hide(from)
                         .commit();
             } else {
@@ -91,13 +93,13 @@ public class StackManager implements CloseFragment {
      * @param quitIn  The current page into the animation
      * @param quitOut Exit animation for the current page
      */
-    public void setAnim(@AnimatorRes int nextIn, @AnimatorRes int nextOut, @AnimatorRes int quitIn, @AnimatorRes int quitOut) {
+    public void setAnim(@AnimRes int nextIn, @AnimRes int nextOut, @AnimRes int quitIn, @AnimRes int quitOut) {
         this.nextIn = nextIn;
         this.nextOut = nextOut;
         this.quitIn = quitIn;
         this.quitOut = quitOut;
-        next_in = AnimationUtils.loadAnimation(context, nextIn);
-        next_out = AnimationUtils.loadAnimation(context, nextOut);
+        next_in = AnimationUtils.loadAnimation(context, quitIn);
+        next_out = AnimationUtils.loadAnimation(context, quitOut);
     }
 
 
@@ -155,12 +157,29 @@ public class StackManager implements CloseFragment {
     public void addFragment(Fragment to) {
         FragmentTransaction transaction = context.getSupportFragmentManager().beginTransaction();
         if (!to.isAdded()) {
-            transaction
-                    .setCustomAnimations(R.anim.dialog_in, R.anim.dialog_out)
-                    .add(R.id.framLayoutId, to, to.getClass().getName())
-                            //.addToBackStack(to.getClass().getName())
-                    .commit();
+            if (dialog_in != 0 && dialog_out != 0) {
+                transaction
+                        .setCustomAnimations(dialog_in, dialog_out)
+                        .add(R.id.framLayoutId, to, to.getClass().getName())
+                        .commit();
+            } else {
+                transaction
+                        .add(R.id.framLayoutId, to, to.getClass().getName())
+                        .commit();
+            }
+
         }
+    }
+
+    /**
+     * Set the animation to add fragment in dialog mode
+     *
+     * @param dialog_in  The next page to enter the animation
+     * @param dialog_out The next page out of the animation
+     */
+    public void setDialogAnim(@AnimRes int dialog_in, @AnimRes int dialog_out) {
+        this.dialog_in = dialog_in;
+        this.dialog_out = dialog_out;
     }
 
     /**
@@ -213,7 +232,7 @@ public class StackManager implements CloseFragment {
                 transaction.show(to).commit();
             }
             View fromVie = from.getView();
-            if (fromVie != null && next_in != null && next_out != null) {
+            if (fromVie != null && next_out != null) {
                 fromVie.startAnimation(next_out);
                 next_out.setAnimationListener(new Animation.AnimationListener() {
                     @Override
@@ -240,7 +259,7 @@ public class StackManager implements CloseFragment {
         }
         if (to != null) {
             View toView = to.getView();
-            if (toView != null && next_in != null && next_out != null) {
+            if (toView != null && next_in != null) {
                 toView.startAnimation(next_in);
             }
         } else {
@@ -256,24 +275,27 @@ public class StackManager implements CloseFragment {
         if (isFirstClose) {
             View view = fragment.getView();
             if (view != null) {
-                view.startAnimation(next_out);
-                next_out.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
+                if (next_out != null) {
+                    view.startAnimation(next_out);
+                    next_out.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        closeFragment(fragment);
-                    }
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            closeFragment(fragment);
+                        }
 
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
 
-                    }
-                });
-
+                        }
+                    });
+                } else {
+                    closeFragment(fragment);
+                }
             }
             isFirstClose = false;
         } else {
@@ -287,7 +309,7 @@ public class StackManager implements CloseFragment {
         FragmentTransaction transaction = context.getSupportFragmentManager().beginTransaction();
         transaction.show(fragment).commit();
         View view = fragment.getView();
-        if (view != null) {
+        if (view != null && next_in != null) {
             view.startAnimation(next_in);
         }
     }

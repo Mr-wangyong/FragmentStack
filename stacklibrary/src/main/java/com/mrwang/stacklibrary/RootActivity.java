@@ -1,6 +1,8 @@
 package com.mrwang.stacklibrary;
 
 import android.os.Bundle;
+import android.support.annotation.AnimRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
@@ -37,7 +39,21 @@ public abstract class RootActivity extends AppCompatActivity {
      *
      * @return fragment
      */
-    protected abstract RootFragment getRootFragment();
+    protected abstract
+    @NonNull
+    RootFragment getRootFragment();
+
+    /**
+     * Set page switch animation
+     *
+     * @param nextIn  The next page to enter the animation
+     * @param nextOut The next page out of the animation
+     * @param quitIn  The current page into the animation
+     * @param quitOut Exit animation for the current page
+     */
+    public void setAnim(@AnimRes int nextIn, @AnimRes int nextOut, @AnimRes int quitIn, @AnimRes int quitOut) {
+        manager.setAnim(nextIn, nextOut, quitIn, quitOut);
+    }
 
     /**
      * Rewriting onCreate method
@@ -66,6 +82,7 @@ public abstract class RootActivity extends AppCompatActivity {
 
     /**
      * Set button to click callback
+     *
      * @param callBack callback
      */
     public void setKeyCallBack(KeyCallBack callBack) {
