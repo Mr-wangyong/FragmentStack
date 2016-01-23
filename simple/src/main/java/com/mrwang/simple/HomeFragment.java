@@ -41,6 +41,7 @@ public class HomeFragment extends RootFragment implements View.OnClickListener {
                 break;
             case R.id.single_top:
                 open(new Fragment1(), null, FragmentStack.SINGLE_TOP);
+
                 break;
             case R.id.single_task:
                 open(new Fragment1(), null, FragmentStack.SINGLE_TASK);

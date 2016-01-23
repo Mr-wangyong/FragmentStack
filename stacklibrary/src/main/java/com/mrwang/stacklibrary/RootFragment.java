@@ -115,6 +115,5 @@ public abstract class RootFragment extends Fragment implements OnNewIntent {
      */
     @Override
     public void onNewIntent() {
-
     }
 }

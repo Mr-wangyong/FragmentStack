@@ -1,4 +1,4 @@
-##FragmentStack
+#FragmentStack
 
 
 >一个封装了任务栈的Fragment便捷使用库,方便构建单Activity+多Fragment轻量级框架。
@@ -27,32 +27,86 @@
 然后,在你的项目中,MainActivity继承RootActivity
 
 
-```public class MainActivity extends RootActivity {
+	public class MainActivity extends RootActivity {
 
-    @Override
-    protected RootFragment getRootFragment() {
-        return new HomeFragment();
-    }
+	    @Override
+	    protected RootFragment getRootFragment() {
+	        return new HomeFragment();
+	    }
 
-    @Override
-    public void onCreateNow(Bundle savedInstanceState) {
-        setAnim(R.anim.next_in, R.anim.next_out, R.anim.quit_in, R.anim.quit_out);
-    }
-}
-```
+	    @Override
+	    public void onCreateNow(Bundle savedInstanceState) {
+	        setAnim(R.anim.next_in, R.anim.next_out, R.anim.quit_in, R.anim.quit_out);
+	    }
+	}
+
 
 Fragment继承BaseFragment
 
-```
-public class HomeFragment extends RootFragment{
+	public class HomeFragment extends RootFragment{
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+	    @Nullable
+	    @Override
+	    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+	
+	    }
+	}
+
+
+接下来,可以自由方便的使用Fragment了;
+
+1.打开一个新的Fragment;
+
+常规方式
+	
+	open(new Fragment());
+
+带参形式
+
+	open(new Fragment());
+	在新Fragment中用Bundle bundle = getArguments();获取
+
+带启动模式形式,支持四种启动模式(实际项目中以singleTask最为实用);
+
+	open(new Fragment1(), null, FragmentStack.STANDARD);
+	open(new Fragment1(), null, FragmentStack.SINGLE_TOP);
+	open(new Fragment1(), null, FragmentStack.SINGLE_TASK);
+	open(new Fragment1(), null, FragmentStack.SINGLE_INSTANCE);
+
+
+设置页面切换动画
+	
+	setAnim(R.anim.next_in, R.anim.next_out, R.anim.quit_in, R.anim.quit_out);
+
+进入下一个页面,两个页面的回调,只需重写
+	
+	private void onNowHidden() {
 
     }
 
-}
-```
+	private void onNextShow() {
 
-接下来,
+    }
+
+Fragment获取依赖的Activity
+
+	RootActivity root = getRoot();
+
+singleTop,fragment被重复创建的回调
+	
+	@Override
+    public void onNewIntent() {
+    }
+
+若需要监听按键事件,只需设置sKeyCallBack
+
+	setKeyCallBack(new KeyCallBack() {
+            @Override
+            public boolean onKeyDown(int keyCode, KeyEvent event) {
+                return false;
+            }
+        });
+
+
+	
+	
