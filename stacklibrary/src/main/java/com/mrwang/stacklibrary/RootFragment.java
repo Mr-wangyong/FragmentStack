@@ -68,6 +68,34 @@ public abstract class RootFragment extends Fragment implements OnNewIntent {
         getRoot().manager.addFragment(this, fragment, bundle, stackMode);
     }
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        if (hidden) {
+            onNowHidden();
+        } else {
+            onNextShow();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    /**
+     * Override this method to facilitate access to the current page page Pause callback
+     */
+    private void onNowHidden() {
+
+    }
+
+    /**
+     * Override this method to facilitate access to the current page page Resume callback
+     */
+    private void onNextShow() {
+
+    }
+
     /**
      * Get fragment dependent Activity, many times this is very useful
      *
