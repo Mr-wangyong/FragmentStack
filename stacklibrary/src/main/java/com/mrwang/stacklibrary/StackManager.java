@@ -1,6 +1,7 @@
 package com.mrwang.stacklibrary;
 
 import android.os.Bundle;
+import android.support.annotation.AnimatorRes;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -22,8 +23,12 @@ public class StackManager implements CloseFragment {
     private long CLICK_SPACE = 500;
     private long currentTime;
     private int currentMode;
-    private final Animation next_in;
-    private final Animation next_out;
+    private int nextIn;
+    private int nextOut;
+    private int quitIn;
+    private int quitOut;
+    private Animation next_in;
+    private Animation next_out;
 
     /**
      * Set the time to click to Prevent repeated clicks,default 500ms
@@ -39,8 +44,7 @@ public class StackManager implements CloseFragment {
         stack = new FragmentStack();
         stack.setCloseFragmentListener(this);
         this.context = context;
-        next_in = AnimationUtils.loadAnimation(context, R.anim.next_in2);
-        next_out = AnimationUtils.loadAnimation(context, R.anim.next_out2);
+
     }
 
     /**
@@ -57,24 +61,50 @@ public class StackManager implements CloseFragment {
     /**
      * Jump to the specified fragment
      */
-    public void popFragment(@NonNull final Fragment from, @NonNull final Fragment to) {
+    public void addFragment(@NonNull final Fragment from, @NonNull final Fragment to) {
         if (System.currentTimeMillis() - currentTime > CLICK_SPACE) {
             currentTime = System.currentTimeMillis();
+
             FragmentTransaction transaction = context.getSupportFragmentManager().beginTransaction();
-            transaction
-                    .setCustomAnimations(R.anim.next_in, R.anim.next_out, R.anim.pop_enter, R.anim.pop_exit)//必须在add、remove、replace调用之前被设置，否则不起作用。
-                    .add(R.id.framLayoutId, to, to.getClass().getName())
-                    .setCustomAnimations(R.anim.next_in, R.anim.next_out, R.anim.pop_enter, R.anim.pop_exit)
-                    .hide(from)
-                    .commit();
+            if (nextIn != 0 && nextOut != 0 && quitIn != 0 && quitOut != 0) {
+                transaction
+                        .setCustomAnimations(nextIn, nextOut, quitIn, quitIn)
+                        .add(R.id.framLayoutId, to, to.getClass().getName())
+                        .setCustomAnimations(nextIn, nextOut, quitIn, quitIn)
+                        .hide(from)
+                        .commit();
+            } else {
+                transaction
+                        .add(R.id.framLayoutId, to, to.getClass().getName())
+                        .hide(from)
+                        .commit();
+            }
+
         }
+    }
+
+    /**
+     * Set page switch animation
+     *
+     * @param nextIn  The next page to enter the animation
+     * @param nextOut The next page out of the animation
+     * @param quitIn  The current page into the animation
+     * @param quitOut Exit animation for the current page
+     */
+    public void setAnim(@AnimatorRes int nextIn, @AnimatorRes int nextOut, @AnimatorRes int quitIn, @AnimatorRes int quitOut) {
+        this.nextIn = nextIn;
+        this.nextOut = nextOut;
+        this.quitIn = quitIn;
+        this.quitOut = quitOut;
+        next_in = AnimationUtils.loadAnimation(context, nextIn);
+        next_out = AnimationUtils.loadAnimation(context, nextOut);
     }
 
 
     /**
      * Jump to the specified fragment
      */
-    public void popFragment(RootFragment from, RootFragment to, Bundle bundle, int stackMode) {
+    public void addFragment(RootFragment from, RootFragment to, Bundle bundle, int stackMode) {
         if (stackMode != 0) {
             currentMode = stackMode;
         }
@@ -84,21 +114,21 @@ public class StackManager implements CloseFragment {
         switch (currentMode) {
             case FragmentStack.SINGLE_TOP:
                 if (!stack.putSingleTop(to)) {
-                    popFragment(from, to);
+                    addFragment(from, to);
                 }
                 break;
             case FragmentStack.SINGLE_TASK:
                 if (!stack.putSingleTask(to)) {
-                    popFragment(from, to);
+                    addFragment(from, to);
                 }
                 break;
             case FragmentStack.SINGLE_INSTANCE:
                 stack.putSingleInstance(to);
-                popFragment(from, to);
+                addFragment(from, to);
                 break;
             default:
                 stack.putStandard(to);
-                popFragment(from, to);
+                addFragment(from, to);
                 break;
         }
 
@@ -107,14 +137,14 @@ public class StackManager implements CloseFragment {
 
 
     public void openFragment(RootFragment from, RootFragment to) {
-        popFragment(from, to, null, 0);
+        addFragment(from, to, null, 0);
     }
 
     /**
      * Jump to the specified fragment with a parameter form
      */
-    public void popFragment(RootFragment from, RootFragment to, Bundle bundle) {
-        popFragment(from, to, bundle, 0);
+    public void addFragment(RootFragment from, RootFragment to, Bundle bundle) {
+        addFragment(from, to, bundle, 0);
     }
 
     /**
@@ -122,7 +152,7 @@ public class StackManager implements CloseFragment {
      *
      * @param to To jump to the page
      */
-    public void popFragment(Fragment to) {
+    public void addFragment(Fragment to) {
         FragmentTransaction transaction = context.getSupportFragmentManager().beginTransaction();
         if (!to.isAdded()) {
             transaction
@@ -176,13 +206,14 @@ public class StackManager implements CloseFragment {
         Fragment[] last = stack.getLast();
         final Fragment from = last[0];
         Fragment to = last[1];
+
         if (from != null) {
             if (to != null) {
                 FragmentTransaction transaction = context.getSupportFragmentManager().beginTransaction();
                 transaction.show(to).commit();
             }
             View fromVie = from.getView();
-            if (fromVie != null) {
+            if (fromVie != null && next_in != null && next_out != null) {
                 fromVie.startAnimation(next_out);
                 next_out.setAnimationListener(new Animation.AnimationListener() {
                     @Override
@@ -201,18 +232,21 @@ public class StackManager implements CloseFragment {
 
                     }
                 });
+
+            } else {
+                stack.onBackPressed();
+                closeFragment(from);
             }
         }
         if (to != null) {
             View toView = to.getView();
-            if (toView != null) {
+            if (toView != null && next_in != null && next_out != null) {
                 toView.startAnimation(next_in);
             }
         } else {
             closeAllFragment();
             context.finish();
         }
-
     }
 
     public static boolean isFirstClose = true;

@@ -20,7 +20,7 @@ public abstract class RootFragment extends Fragment implements OnNewIntent {
      * @param fragment fragment
      */
     public void open(@NonNull RootFragment fragment) {
-        getRoot().manager.popFragment(this, fragment, null);
+        getRoot().manager.addFragment(this, fragment, null);
     }
 
     /**
@@ -42,7 +42,7 @@ public abstract class RootFragment extends Fragment implements OnNewIntent {
      * @param bundle   bundle
      */
     public void open(@NonNull RootFragment fragment, Bundle bundle) {
-        getRoot().manager.popFragment(this, fragment, bundle);
+        getRoot().manager.addFragment(this, fragment, bundle);
     }
 
     /**
@@ -65,7 +65,7 @@ public abstract class RootFragment extends Fragment implements OnNewIntent {
      * @param stackMode stackMode,{@link FragmentStack#STANDARD} or more
      */
     public void open(@NonNull RootFragment fragment, Bundle bundle, int stackMode) {
-        getRoot().manager.popFragment(this, fragment, bundle, stackMode);
+        getRoot().manager.addFragment(this, fragment, bundle, stackMode);
     }
 
     /**

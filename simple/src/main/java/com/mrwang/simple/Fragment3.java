@@ -6,7 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.cinema.fragmentstacklibrary.RootFragment;
+import com.mrwang.stacklibrary.RootFragment;
+
 
 /**
  * User: chengwangyong(chengwangyong@vcinema.com)
