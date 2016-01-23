@@ -35,7 +35,7 @@ public class StackManager implements CloseFragment {
     /**
      * Set the time to click to Prevent repeated clicks,default 500ms
      *
-     * @param CLICK_SPACE 重复点击时间
+     * @param CLICK_SPACE Repeat click time
      */
     public void setClickSpace(long CLICK_SPACE) {
         this.CLICK_SPACE = CLICK_SPACE;
@@ -154,7 +154,7 @@ public class StackManager implements CloseFragment {
      *
      * @param to To jump to the page
      */
-    public void addFragment(Fragment to) {
+    public void dialogFragment(Fragment to) {
         FragmentTransaction transaction = context.getSupportFragmentManager().beginTransaction();
         if (!to.isAdded()) {
             if (dialog_in != 0 && dialog_out != 0) {

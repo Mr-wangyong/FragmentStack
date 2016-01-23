@@ -1,6 +1,7 @@
 package com.mrwang.stacklibrary;
 
 import android.os.Bundle;
+import android.support.annotation.AnimRes;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -68,6 +69,26 @@ public abstract class RootFragment extends Fragment implements OnNewIntent {
         getRoot().manager.addFragment(this, fragment, bundle, stackMode);
     }
 
+    /**
+     * Jump to the specified fragment and do not hide the current page.
+     *
+     * @param to To jump to the page
+     */
+    public void dialogFragment(Fragment to) {
+        getRoot().manager.dialogFragment(to);
+    }
+
+    /**
+     * Set the animation to add fragment in dialog mode
+     *
+     * @param dialog_in  The next page to enter the animation
+     * @param dialog_out The next page out of the animation
+     */
+    public void setDialogAnim(@AnimRes int dialog_in, @AnimRes int dialog_out) {
+        getRoot().manager.setDialogAnim(dialog_in, dialog_out);
+    }
+
+
     @Override
     public void onHiddenChanged(boolean hidden) {
         if (hidden) {
@@ -116,4 +137,6 @@ public abstract class RootFragment extends Fragment implements OnNewIntent {
     @Override
     public void onNewIntent() {
     }
+
+
 }

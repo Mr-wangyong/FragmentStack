@@ -22,4 +22,13 @@ public class MainActivity extends RootActivity {
     public void onCreateNow(Bundle savedInstanceState) {
         setAnim(R.anim.next_in, R.anim.next_out, R.anim.quit_in, R.anim.quit_out);
     }
+
+    /**
+     * Set the time to click to Prevent repeated clicks,default 500ms
+     *
+     * @param CLICK_SPACE Repeat click time(ms)
+     */
+    public void setClickSpace(long CLICK_SPACE) {
+        manager.setClickSpace(CLICK_SPACE);
+    }
 }

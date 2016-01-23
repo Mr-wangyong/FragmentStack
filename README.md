@@ -55,6 +55,9 @@ Fragment继承BaseFragment
 
 接下来,可以自由方便的使用Fragment了;
 
+
+
+## 四 API说明
 1.打开一个新的Fragment;
 
 常规方式
