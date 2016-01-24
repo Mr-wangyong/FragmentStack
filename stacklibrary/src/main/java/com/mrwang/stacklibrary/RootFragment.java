@@ -2,6 +2,7 @@ package com.mrwang.stacklibrary;
 
 import android.os.Bundle;
 import android.support.annotation.AnimRes;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -65,7 +66,8 @@ public abstract class RootFragment extends Fragment implements OnNewIntent {
      * @param bundle    bundle
      * @param stackMode stackMode,{@link FragmentStack#STANDARD} or more
      */
-    public void open(@NonNull RootFragment fragment, Bundle bundle, int stackMode) {
+
+    public void open(@NonNull RootFragment fragment, Bundle bundle,int stackMode) {
         getRoot().manager.addFragment(this, fragment, bundle, stackMode);
     }
 

@@ -71,10 +71,10 @@ Fragment继承BaseFragment
 
 带启动模式形式,支持四种启动模式(实际项目中以singleTask最为实用);
 
-	open(new Fragment1(), null, FragmentStack.STANDARD);
-	open(new Fragment1(), null, FragmentStack.SINGLE_TOP);
-	open(new Fragment1(), null, FragmentStack.SINGLE_TASK);
-	open(new Fragment1(), null, FragmentStack.SINGLE_INSTANCE);
+	open(new Fragment1(), null, StackManager.STANDARD);
+	open(new Fragment1(), null, StackManager.SINGLE_TOP);
+	open(new Fragment1(), null, StackManager.SINGLE_TASK);
+	open(new Fragment1(), null, StackManager.SINGLE_INSTANCE);
 
 
 设置页面切换动画

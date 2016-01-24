@@ -11,12 +11,6 @@ import java.util.ArrayList;
  * Time: 19:39
  */
 public class FragmentStack {
-    public static final int STANDARD = 0x11;
-    public static final int SINGLE_TOP = 0x12;
-    public static final int SINGLE_TASK = 0x13;
-    public static final int SINGLE_INSTANCE = 0x14;
-
-
     private ArrayList<ArrayList<RootFragment>> stackList = new ArrayList<>();
     private ArrayList<RootFragment> stack;
     private CloseFragment listener;

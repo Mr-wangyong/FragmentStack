@@ -6,8 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.mrwang.stacklibrary.FragmentStack;
 import com.mrwang.stacklibrary.RootFragment;
+import com.mrwang.stacklibrary.StackManager;
 
 
 /**
@@ -38,17 +38,17 @@ public class HomeFragment extends RootFragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.standard:
-                open(new Fragment1(), null, FragmentStack.STANDARD);
+                open(new Fragment1(), null, StackManager.STANDARD);
                 break;
             case R.id.single_top:
-                open(new Fragment1(), null, FragmentStack.SINGLE_TOP);
+                open(new Fragment1(), null, StackManager.SINGLE_TOP);
 
                 break;
             case R.id.single_task:
-                open(new Fragment1(), null, FragmentStack.SINGLE_TASK);
+                open(new Fragment1(), null, StackManager.SINGLE_TASK);
                 break;
             case R.id.single_instance:
-                open(new Fragment1(), null, FragmentStack.SINGLE_INSTANCE);
+                open(new Fragment1(), null, StackManager.SINGLE_INSTANCE);
                 break;
         }
     }

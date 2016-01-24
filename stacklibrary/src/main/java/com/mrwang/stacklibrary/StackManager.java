@@ -2,6 +2,7 @@ package com.mrwang.stacklibrary;
 
 import android.os.Bundle;
 import android.support.annotation.AnimRes;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -31,6 +32,11 @@ public class StackManager implements CloseFragment {
     private Animation next_out;
     private int dialog_in;
     private int dialog_out;
+    public static final int STANDARD = 0x11;
+    public static final int SINGLE_TOP = 0x12;
+    public static final int SINGLE_TASK = 0x13;
+    public static final int SINGLE_INSTANCE = 0x14;
+    public static final int KEEP_CURRENT = 0x15;
 
     /**
      * Set the time to click to Prevent repeated clicks,default 500ms
@@ -106,25 +112,25 @@ public class StackManager implements CloseFragment {
     /**
      * Jump to the specified fragment
      */
-    public void addFragment(RootFragment from, RootFragment to, Bundle bundle, int stackMode) {
-        if (stackMode != 0) {
+    public void addFragment(RootFragment from, RootFragment to, Bundle bundle,@StackMode int stackMode) {
+        if (stackMode != KEEP_CURRENT) {
             currentMode = stackMode;
         }
         if (bundle != null) {
             to.setArguments(bundle);
         }
         switch (currentMode) {
-            case FragmentStack.SINGLE_TOP:
+            case SINGLE_TOP:
                 if (!stack.putSingleTop(to)) {
                     addFragment(from, to);
                 }
                 break;
-            case FragmentStack.SINGLE_TASK:
+            case SINGLE_TASK:
                 if (!stack.putSingleTask(to)) {
                     addFragment(from, to);
                 }
                 break;
-            case FragmentStack.SINGLE_INSTANCE:
+            case SINGLE_INSTANCE:
                 stack.putSingleInstance(to);
                 addFragment(from, to);
                 break;
@@ -146,7 +152,7 @@ public class StackManager implements CloseFragment {
      * Jump to the specified fragment with a parameter form
      */
     public void addFragment(RootFragment from, RootFragment to, Bundle bundle) {
-        addFragment(from, to, bundle, 0);
+        addFragment(from, to, bundle, KEEP_CURRENT);
     }
 
     /**
@@ -313,4 +319,10 @@ public class StackManager implements CloseFragment {
             view.startAnimation(next_in);
         }
     }
+
+    @IntDef({STANDARD, SINGLE_TOP, SINGLE_TASK,SINGLE_INSTANCE,KEEP_CURRENT})
+    public @interface StackMode {
+
+    }
+
 }
