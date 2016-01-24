@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import com.mrwang.stacklibrary.RootFragment;
 import com.mrwang.stacklibrary.StackManager;
 
-
 /**
  * User: chengwangyong(chengwangyong@vcinema.com)
  * Date: 2016-01-19
@@ -42,7 +41,6 @@ public class HomeFragment extends RootFragment implements View.OnClickListener {
                 break;
             case R.id.single_top:
                 open(new Fragment1(), null, StackManager.SINGLE_TOP);
-
                 break;
             case R.id.single_task:
                 open(new Fragment1(), null, StackManager.SINGLE_TASK);
