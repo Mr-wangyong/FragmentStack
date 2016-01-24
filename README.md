@@ -1,7 +1,7 @@
 #FragmentStack
 
 
->一个封装了任务栈的Fragment便捷使用库,方便构建单Activity+多Fragment轻量级框架。
+>一个封装了启动模式的Fragment便捷使用库,方便构建单Activity+多Fragment轻量级框架。
 
 ## 一 为什么要写这个库
 
@@ -111,5 +111,8 @@ singleTop,fragment被重复创建的回调
         });
 
 
+使用效果:
+
+<img src="play.gif"/>
 	
 	
