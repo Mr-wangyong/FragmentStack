@@ -89,6 +89,21 @@ public abstract class RootFragment extends Fragment implements OnNewIntent {
         getRoot().manager.setDialogAnim(dialog_in, dialog_out);
     }
 
+    /**
+     * close this current Fragment
+     */
+    public void close() {
+        getRoot().manager.close(this);
+    }
+
+    /**
+     * Closes the specified fragment
+     * @param fragment the specified fragment
+     */
+    public void close(RootFragment fragment){
+        getRoot().manager.close(fragment);
+    }
+
 
     @Override
     public void onHiddenChanged(boolean hidden) {

@@ -77,6 +77,15 @@ Fragment继承BaseFragment
 	open(new Fragment1(), null, StackManager.SINGLE_INSTANCE);
 
 
+关闭当前的fragment
+
+    close()
+
+关闭指定的Fragment
+
+	close(fragment)
+
+
 设置页面切换动画
 	
 	setAnim(R.anim.next_in, R.anim.next_out, R.anim.quit_in, R.anim.quit_out);

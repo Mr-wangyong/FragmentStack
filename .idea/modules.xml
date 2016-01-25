@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/FragmentStack.iml" filepath="$PROJECT_DIR$/FragmentStack.iml" />
       <module fileurl="file://$PROJECT_DIR$/FragmentTask.iml" filepath="$PROJECT_DIR$/FragmentTask.iml" />
       <module fileurl="file://$PROJECT_DIR$/simple/simple.iml" filepath="$PROJECT_DIR$/simple/simple.iml" />
       <module fileurl="file://$PROJECT_DIR$/stacklibrary/stacklibrary.iml" filepath="$PROJECT_DIR$/stacklibrary/stacklibrary.iml" />
