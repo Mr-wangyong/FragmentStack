@@ -1,6 +1,8 @@
 package com.mrwang.stacklibrary;
 
 import android.os.Bundle;
+import android.support.annotation.AnimRes;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -11,7 +13,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 /**
- * User: chengwangyong(chengwangyong@vcinema.com)
+ * Fragment task stack manager
+ * User: chengwangyong(cwy545177162@163.com)
  * Date: 2015-12-06
  * Time: 20:25
  */
@@ -21,15 +24,24 @@ public class StackManager implements CloseFragment {
     private long CLICK_SPACE = 500;
     private long currentTime;
     private int currentMode;
-    private final Animation next_in;
-    private final Animation next_out;
-    private final Animation pop_exit;
-    private final Animation pop_enter;
+    private int nextIn;
+    private int nextOut;
+    private int quitIn;
+    private int quitOut;
+    private Animation next_in;
+    private Animation next_out;
+    private int dialog_in;
+    private int dialog_out;
+    public static final int STANDARD = 0x11;
+    public static final int SINGLE_TOP = 0x12;
+    public static final int SINGLE_TASK = 0x13;
+    public static final int SINGLE_INSTANCE = 0x14;
+    public static final int KEEP_CURRENT = 0x15;
 
     /**
-     * 设置点击间隔时间 防止重复点击 默认500ms
+     * Set the time to click to Prevent repeated clicks,default 500ms
      *
-     * @param CLICK_SPACE 重复点击时间
+     * @param CLICK_SPACE Repeat click time
      */
     public void setClickSpace(long CLICK_SPACE) {
         this.CLICK_SPACE = CLICK_SPACE;
@@ -40,14 +52,11 @@ public class StackManager implements CloseFragment {
         stack = new FragmentStack();
         stack.setCloseFragmentListener(this);
         this.context = context;
-        next_in = AnimationUtils.loadAnimation(context, R.anim.next_in2);
-        next_out = AnimationUtils.loadAnimation(context, R.anim.next_out2);
-        pop_enter = AnimationUtils.loadAnimation(context, R.anim.pop_enter);
-        pop_exit = AnimationUtils.loadAnimation(context, R.anim.pop_exit);
+
     }
 
     /**
-     * 设置底层的fragment
+     * Set the bottom of the fragment
      */
     public void setFragment(@NonNull RootFragment mTargetFragment) {
         FragmentTransaction transaction = context.getSupportFragmentManager().beginTransaction();
@@ -57,49 +66,77 @@ public class StackManager implements CloseFragment {
         stack.putStandard(mTargetFragment);
     }
 
-
-    public void popFragment(@NonNull final Fragment from, @NonNull final Fragment to) {
+    /**
+     * Jump to the specified fragment
+     */
+    public void addFragment(@NonNull final Fragment from, @NonNull final Fragment to) {
         if (System.currentTimeMillis() - currentTime > CLICK_SPACE) {
             currentTime = System.currentTimeMillis();
+
             FragmentTransaction transaction = context.getSupportFragmentManager().beginTransaction();
-            transaction
-                    .setCustomAnimations(R.anim.next_in, R.anim.next_out, R.anim.pop_enter, R.anim.pop_exit)//必须在add、remove、replace调用之前被设置，否则不起作用。
-                    .add(R.id.framLayoutId, to, to.getClass().getName())
-                    .setCustomAnimations(R.anim.next_in, R.anim.next_out, R.anim.pop_enter, R.anim.pop_exit)
-                    .hide(from)
-                    .commit();
+            if (nextIn != 0 && nextOut != 0 && quitIn != 0 && quitOut != 0) {
+                transaction
+                        .setCustomAnimations(nextIn, nextOut)
+                        .add(R.id.framLayoutId, to, to.getClass().getName())
+                        .setCustomAnimations(nextIn, nextOut)
+                        .hide(from)
+                        .commit();
+            } else {
+                transaction
+                        .add(R.id.framLayoutId, to, to.getClass().getName())
+                        .hide(from)
+                        .commit();
+            }
+
         }
+    }
+
+    /**
+     * Set page switch animation
+     *
+     * @param nextIn  The next page to enter the animation
+     * @param nextOut The next page out of the animation
+     * @param quitIn  The current page into the animation
+     * @param quitOut Exit animation for the current page
+     */
+    public void setAnim(@AnimRes int nextIn, @AnimRes int nextOut, @AnimRes int quitIn, @AnimRes int quitOut) {
+        this.nextIn = nextIn;
+        this.nextOut = nextOut;
+        this.quitIn = quitIn;
+        this.quitOut = quitOut;
+        next_in = AnimationUtils.loadAnimation(context, quitIn);
+        next_out = AnimationUtils.loadAnimation(context, quitOut);
     }
 
 
     /**
-     * 跳转到指定的fragment
+     * Jump to the specified fragment
      */
-    public void popFragment(RootFragment from, RootFragment to, Bundle bundle, int stackMode) {
-        if (stackMode != 0) {
+    public void addFragment(RootFragment from, RootFragment to, Bundle bundle,@StackMode int stackMode) {
+        if (stackMode != KEEP_CURRENT) {
             currentMode = stackMode;
         }
         if (bundle != null) {
             to.setArguments(bundle);
         }
         switch (currentMode) {
-            case FragmentStack.SINGLE_TOP:
-                if (!stack.putSingleTop(to)){
-                    popFragment(from, to);
+            case SINGLE_TOP:
+                if (!stack.putSingleTop(to)) {
+                    addFragment(from, to);
                 }
                 break;
-            case FragmentStack.SINGLE_TASK:
-                if (!stack.putSingleTask(to)){
-                    popFragment(from, to);
+            case SINGLE_TASK:
+                if (!stack.putSingleTask(to)) {
+                    addFragment(from, to);
                 }
                 break;
-            case FragmentStack.SINGLE_INSTANCE:
+            case SINGLE_INSTANCE:
                 stack.putSingleInstance(to);
-                popFragment(from, to);
+                addFragment(from, to);
                 break;
             default:
                 stack.putStandard(to);
-                popFragment(from, to);
+                addFragment(from, to);
                 break;
         }
 
@@ -108,34 +145,51 @@ public class StackManager implements CloseFragment {
 
 
     public void openFragment(RootFragment from, RootFragment to) {
-        popFragment(from, to, null, 0);
+        addFragment(from, to, null, 0);
     }
 
     /**
-     * 跳转到指定的fragment 带参形式
+     * Jump to the specified fragment with a parameter form
      */
-    public void popFragment(RootFragment from, RootFragment to, Bundle bundle) {
-        popFragment(from, to, bundle, 0);
+    public void addFragment(RootFragment from, RootFragment to, Bundle bundle) {
+        addFragment(from, to, bundle, KEEP_CURRENT);
     }
 
     /**
-     * 跳转到指定的fragment 并且不隐藏当前页面
+     * Jump to the specified fragment and do not hide the current page.
      *
-     * @param to 要跳转的页面
+     * @param to To jump to the page
      */
-    public void popFragment(Fragment to) {
+    public void dialogFragment(Fragment to) {
         FragmentTransaction transaction = context.getSupportFragmentManager().beginTransaction();
         if (!to.isAdded()) {
-            transaction
-                    .setCustomAnimations(R.anim.dialog_in, R.anim.dialog_out)
-                    .add(R.id.framLayoutId, to, to.getClass().getName())
-                    //.addToBackStack(to.getClass().getName())
-                    .commit();
+            if (dialog_in != 0 && dialog_out != 0) {
+                transaction
+                        .setCustomAnimations(dialog_in, dialog_out)
+                        .add(R.id.framLayoutId, to, to.getClass().getName())
+                        .commit();
+            } else {
+                transaction
+                        .add(R.id.framLayoutId, to, to.getClass().getName())
+                        .commit();
+            }
+
         }
     }
 
     /**
-     * 关闭指定的fragment
+     * Set the animation to add fragment in dialog mode
+     *
+     * @param dialog_in  The next page to enter the animation
+     * @param dialog_out The next page out of the animation
+     */
+    public void setDialogAnim(@AnimRes int dialog_in, @AnimRes int dialog_out) {
+        this.dialog_in = dialog_in;
+        this.dialog_out = dialog_out;
+    }
+
+    /**
+     * Closes the specified fragment
      *
      * @param mTargetFragment fragment
      */
@@ -145,9 +199,9 @@ public class StackManager implements CloseFragment {
     }
 
     /**
-     * 根据tag 关闭指定的fragment
+     * Close the specified fragment by tag
      *
-     * @param tag fragment的tag
+     * @param tag fragment tag
      */
     public void closeFragment(String tag) {
         Fragment fragmentByTag = context.getSupportFragmentManager().findFragmentByTag(tag);
@@ -163,7 +217,7 @@ public class StackManager implements CloseFragment {
 
 
     /**
-     * 关闭所有的fragment
+     * Close all fragment
      */
     public void closeAllFragment() {
         int backStackCount = context.getSupportFragmentManager().getBackStackEntryCount();
@@ -177,13 +231,14 @@ public class StackManager implements CloseFragment {
         Fragment[] last = stack.getLast();
         final Fragment from = last[0];
         Fragment to = last[1];
+
         if (from != null) {
-            if (to!=null){
+            if (to != null) {
                 FragmentTransaction transaction = context.getSupportFragmentManager().beginTransaction();
                 transaction.show(to).commit();
             }
             View fromVie = from.getView();
-            if (fromVie != null) {
+            if (fromVie != null && next_out != null) {
                 fromVie.startAnimation(next_out);
                 next_out.setAnimationListener(new Animation.AnimationListener() {
                     @Override
@@ -202,47 +257,54 @@ public class StackManager implements CloseFragment {
 
                     }
                 });
+
+            } else {
+                stack.onBackPressed();
+                closeFragment(from);
             }
         }
         if (to != null) {
             View toView = to.getView();
-            if (toView != null) {
+            if (toView != null && next_in != null) {
                 toView.startAnimation(next_in);
             }
-        }else{
+        } else {
             closeAllFragment();
             context.finish();
         }
-
     }
 
-    public static boolean isFirstClose=true;
+    public static boolean isFirstClose = true;
+
     @Override
     public void close(final RootFragment fragment) {
-        if (isFirstClose){
+        if (isFirstClose) {
             View view = fragment.getView();
-            if (view != null){
-                view.startAnimation(next_out);
-                next_out.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
+            if (view != null) {
+                if (next_out != null) {
+                    view.startAnimation(next_out);
+                    next_out.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        closeFragment(fragment);
-                    }
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            closeFragment(fragment);
+                        }
 
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
 
-                    }
-                });
-
+                        }
+                    });
+                } else {
+                    closeFragment(fragment);
+                }
             }
-            isFirstClose=false;
-        }else{
+            isFirstClose = false;
+        } else {
             closeFragment(fragment);
         }
 
@@ -253,8 +315,14 @@ public class StackManager implements CloseFragment {
         FragmentTransaction transaction = context.getSupportFragmentManager().beginTransaction();
         transaction.show(fragment).commit();
         View view = fragment.getView();
-        if (view != null){
+        if (view != null && next_in != null) {
             view.startAnimation(next_in);
         }
     }
+
+    @IntDef({STANDARD, SINGLE_TOP, SINGLE_TASK,SINGLE_INSTANCE,KEEP_CURRENT})
+    public @interface StackMode {
+
+    }
+
 }

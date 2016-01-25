@@ -2,7 +2,9 @@ package com.mrwang.stacklibrary;
 
 /**
  * close this fragment
- * Created by Cinema on 2016/1/19 /0019.
+ * User: chengwangyong(cwy545177162@163.com)
+ * Date: 2015-12-06
+ * Time: 19:39
  */
 public interface CloseFragment {
     void close(RootFragment fragment);

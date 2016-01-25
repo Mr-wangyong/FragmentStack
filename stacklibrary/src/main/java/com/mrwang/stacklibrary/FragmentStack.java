@@ -5,18 +5,12 @@ import android.support.v4.app.Fragment;
 import java.util.ArrayList;
 
 /**
- * Fragment任务栈
- * User: chengwangyong(chengwangyong@vcinema.com)
+ * Fragment Stack
+ * User: chengwangyong(cwy545177162@163.com)
  * Date: 2015-12-06
  * Time: 19:39
  */
 public class FragmentStack {
-    public static final int STANDARD = 0x11;
-    public static final int SINGLE_TOP = 0x12;
-    public static final int SINGLE_TASK = 0x13;
-    public static final int SINGLE_INSTANCE = 0x14;
-
-
     private ArrayList<ArrayList<RootFragment>> stackList = new ArrayList<>();
     private ArrayList<RootFragment> stack;
     private CloseFragment listener;
@@ -30,19 +24,19 @@ public class FragmentStack {
 
 
     /**
-     * standard 模式 直接加入到当前的任务栈
+     * standard mode,Directly add to the current task stack
      *
-     * @param fragment 加入的fragment
+     * @param fragment Added fragment
      */
     public void putStandard(RootFragment fragment) {
         stackList.get(stackList.size() - 1).add(fragment);
     }
 
     /**
-     * SingleTop模式 如果顶部有 则不创建
+     * SingleTop mode ,If the top is not created
      *
-     * @param fragment 加入的fragment
-     * @return 是否含有当前的实例
+     * @param fragment Added fragment
+     * @return Whether to contain the current instance
      */
     public boolean putSingleTop(RootFragment fragment) {
         ArrayList<RootFragment> lastList = stackList.get(stackList.size() - 1);
@@ -64,10 +58,10 @@ public class FragmentStack {
     }
 
     /**
-     * singTask模式 如果当前任务栈中有 则不创建 并清空所有的上层实例
+     * singTask mode ,If the current task stack does not create and empty all of the upper instance
      *
-     * @param fragment 加入的fragment
-     * @return 是否含有当前的实例
+     * @param fragment Added fragment
+     * @return Whether to contain the current instance
      */
     public boolean putSingleTask(RootFragment fragment) {
         boolean isClear = false;
@@ -87,13 +81,13 @@ public class FragmentStack {
             if (!isClear) {
                 lastList.add(fragment);
             } else {
-                if (listener!=null){
+                if (listener != null) {
                     listener.show(lastList.get(tempIndex));
-                    StackManager.isFirstClose=true;
-                    for (int i = lastList.size()-1; i >tempIndex ; i--) {
+                    StackManager.isFirstClose = true;
+                    for (int i = lastList.size() - 1; i > tempIndex; i--) {
                         listener.close(lastList.get(i));
                     }
-                    for (int j = lastList.size()-1; j >tempIndex ; j--) {
+                    for (int j = lastList.size() - 1; j > tempIndex; j--) {
                         lastList.remove(j);
                     }
                 }
@@ -105,7 +99,7 @@ public class FragmentStack {
     }
 
     /**
-     * singleInstance 模式 每次都创建一个新的任务栈
+     * singleInstance mode,Create a new task stack at a time.
      *
      * @param fragment 加入的fragment
      */
@@ -130,24 +124,13 @@ public class FragmentStack {
         } else {
             stackList.clear();
         }
-//        int i = stackList.size() - 1;
-//        if (i >= 0) {
-//            ArrayList<RootFragment> lastStack = stackList.get(i);
-//            if (lastStack == null || lastStack.isEmpty()) {
-//                stackList.remove(lastStack);
-//            } else {
-//                lastStack.remove(lastStack.size() - 1);
-//            }
-//        } else {
-//
-//        }
     }
 
-    public void setCloseFragmentListener(CloseFragment listener) {
+    protected void setCloseFragmentListener(CloseFragment listener) {
         this.listener = listener;
     }
 
-    public Fragment[] getLast() {
+    protected Fragment[] getLast() {
         Fragment[] fagArr = new Fragment[2];
         boolean hasFirst = false;
         for (int x = stackList.size() - 1; x >= 0; x--) {
@@ -166,29 +149,6 @@ public class FragmentStack {
 
             }
         }
-        //return list.get(list.size()-1);
         return fagArr;
     }
-
-//    public Fragment getSecondLast() {
-////        int i = stackList.size() - 2;
-////        if (i >= 0) {
-////            ArrayList<RootFragment> lastStack = stackList.get(i);
-////            if (lastStack == null || lastStack.isEmpty()) {
-////                return null;
-////            } else {
-////                return lastStack.get(lastStack.size() - 1);
-////            }
-////        } else {
-////            return null;
-////        }
-//
-//        for (int x = stackList.size() - 1; x >= 0; x--) {
-//            ArrayList<RootFragment> list = stackList.get(x);
-//            if (list != null && (!list.isEmpty())) {
-//                return list.get(list.size() - 2);
-//            }
-//        }
-//        return null;
-//    }
 }
