@@ -24,6 +24,8 @@
 
 对于如何导入，也是相当的简单，android studio的用户，直接：
 
+	compile 'com.mrwang.Fragmenttack:stacklibrary:1.0.0'
+
 然后,在你的项目中,MainActivity继承RootActivity
 
 

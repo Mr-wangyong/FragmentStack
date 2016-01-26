@@ -14,8 +14,9 @@ import android.view.animation.AnimationUtils;
 
 /**
  * Fragment task stack manager
- * User: chengwangyong(cwy545177162@163.com)
- * Date: 2015-12-06
+ * <p>
+ * User: chengwangyong(cwy545177162@163.com)<p>
+ * Date: 2015-12-06<p>
  * Time: 20:25
  */
 public class StackManager implements CloseFragment {
@@ -57,6 +58,7 @@ public class StackManager implements CloseFragment {
 
     /**
      * Set the bottom of the fragment
+     * @param mTargetFragment  bottom of the fragment
      */
     public void setFragment(@NonNull RootFragment mTargetFragment) {
         FragmentTransaction transaction = context.getSupportFragmentManager().beginTransaction();
@@ -68,6 +70,8 @@ public class StackManager implements CloseFragment {
 
     /**
      * Jump to the specified fragment
+     * @param from current fragment
+     * @param to next fragment
      */
     public void addFragment(@NonNull final Fragment from, @NonNull final Fragment to) {
         if (System.currentTimeMillis() - currentTime > CLICK_SPACE) {
@@ -111,6 +115,10 @@ public class StackManager implements CloseFragment {
 
     /**
      * Jump to the specified fragment
+     * @param from current fragment
+     * @param to next fragment
+     * @param bundle Parameter carrier
+     * @param stackMode fragment stack Mode
      */
     public void addFragment(RootFragment from, RootFragment to, Bundle bundle,@StackMode int stackMode) {
         if (stackMode != KEEP_CURRENT) {
@@ -143,13 +151,20 @@ public class StackManager implements CloseFragment {
 
     }
 
-
+    /**
+     * open this fragment
+     * @param from current fragment
+     * @param to next fragment
+     */
     public void openFragment(RootFragment from, RootFragment to) {
-        addFragment(from, to, null, 0);
+        addFragment(from, to, null, KEEP_CURRENT);
     }
 
     /**
      * Jump to the specified fragment with a parameter form
+     * @param from current fragment
+     * @param to next fragment
+     * @param bundle Parameter carrier
      */
     public void addFragment(RootFragment from, RootFragment to, Bundle bundle) {
         addFragment(from, to, bundle, KEEP_CURRENT);

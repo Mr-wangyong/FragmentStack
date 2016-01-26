@@ -16,7 +16,6 @@ public abstract class RootFragment extends Fragment implements OnNewIntent {
 
     /**
      * open a new Fragment
-     * </p>
      *
      * @param fragment fragment
      */
@@ -26,18 +25,15 @@ public abstract class RootFragment extends Fragment implements OnNewIntent {
 
     /**
      * open a new Fragment,And transfer parameters with bundle
-     * <br/>
+     * <p>
      * Like this
-     * <br/><p>
-     * Bundle bundle=new Bundle();<br/>
+     * <pre>   {@code
+     * Bundle bundle=new Bundle();
      * bundle.put(key,value);
-     * </p>
      * In the new fragment, you can accept parameters like this
-     * <br/>
-     * <p/>
-     * Bundle bundle = fragment.getArguments();<br/>
-     * bundle.get(key);<br/>
-     * <p/>
+     * Bundle bundle = fragment.getArguments();
+     * bundle.get(key);
+     * }</pre>
      *
      * @param fragment fragment
      * @param bundle   bundle
@@ -48,22 +44,21 @@ public abstract class RootFragment extends Fragment implements OnNewIntent {
 
     /**
      * open a new Fragment,And transfer parameters with bundle andr set StackMode
-     * <br/>
      * Like this
-     * <br/><p>
-     * Bundle bundle=new Bundle();<br/>
+     * <pre>   {@code
+     * Bundle bundle=new Bundle();
      * bundle.put(key,value);
-     * </p>
+     *
+     * }</pre>
      * In the new fragment, you can accept parameters like this
-     * <br/>
-     * <p/>
-     * Bundle bundle = fragment.getArguments();<br/>
+     * <pre>   {@code
+     * Bundle bundle = fragment.getArguments();
      * bundle.get(key);<br/>
-     * <p/>
+     * }</pre>
      *
      * @param fragment  fragment
      * @param bundle    bundle
-     * @param stackMode stackMode,{@link FragmentStack#STANDARD} or more
+     * @param stackMode stackMode,{@link StackManager#STANDARD} or more
      */
 
     public void open(@NonNull RootFragment fragment, Bundle bundle, int stackMode) {
@@ -98,9 +93,10 @@ public abstract class RootFragment extends Fragment implements OnNewIntent {
 
     /**
      * Closes the specified fragment
+     *
      * @param fragment the specified fragment
      */
-    public void close(RootFragment fragment){
+    public void close(RootFragment fragment) {
         getRoot().manager.close(fragment);
     }
 
