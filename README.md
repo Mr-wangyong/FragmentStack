@@ -43,7 +43,7 @@
 	}
 
 
-Fragment继承BaseFragment
+Fragment继承RootFragment
 
 	public class HomeFragment extends RootFragment{
 
