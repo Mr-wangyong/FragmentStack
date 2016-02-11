@@ -112,7 +112,7 @@ singleTop,fragment被重复创建的回调
     public void onNewIntent() {
     }
 
-若需要监听按键事件,只需设置sKeyCallBack
+若需要监听按键事件,只需设置setKeyCallBack
 
 	setKeyCallBack(new KeyCallBack() {
             @Override
