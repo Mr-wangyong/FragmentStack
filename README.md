@@ -126,6 +126,16 @@ singleTop,fragment被重复创建的回调
 
 <img src="play.gif"/>
 
+
+Pull Requests 与 Issues
+
+欢迎大家发现问题与共同维护该项目,喜欢就Star吧，后面会扩展更多实用功能
+
+Author
+
+Mr.wang
+
+
 此框架已在本公司商业项目使用:
 
 南瓜电影[http://www.wandoujia.com/apps/cn.vcinema.cinema](http://www.wandoujia.com/apps/cn.vcinema.cinema)
