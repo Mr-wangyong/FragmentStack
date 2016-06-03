@@ -23,7 +23,17 @@
 ## 三 配置和开始使用
 
 对于如何导入，也是相当的简单，android studio的用户，直接：
+	
+	project build.gradle加入jitpack
 
+	allprojects {
+		repositories {
+			...
+			maven { url "https://jitpack.io" }
+		}
+	}
+	
+	项目的build.gradle加入
 	compile 'com.mrwang.Fragmenttack:stacklibrary:1.0.0'
 
 然后,在你的项目中,MainActivity继承RootActivity
@@ -134,6 +144,11 @@ singleTop,fragment被重复创建的回调
 ## Author
 
 Mr.wang
+
+## 感谢
+[[钟白兔]建立一个属于自己的框架 ](http://hackeris.me/2015/06/10/buid_your_framework/)
+
+[[Harlber] Github ](https://github.com/Harlber)
 
 
 此框架已在本公司商业项目使用:
