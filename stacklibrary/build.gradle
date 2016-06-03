@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
+// JitPack Maven
 apply plugin: 'com.github.dcendents.android-maven'
-apply plugin: 'com.jfrog.bintray'
-apply plugin: 'com.github.dcendents.android-maven'
-
+// Your Group
+group='com.github.Mr-wangyong'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    buildToolsVersion "23.0.3"
 
     defaultConfig {
         minSdkVersion 15
@@ -25,122 +25,8 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.1.1'
-
+    compile 'com.android.support:appcompat-v7:23.4.0'
 }
 
-def siteUrl = 'https://github.com/Mr-wangyong/FragmentStack'      // 项目的主页
-def gitUrl = 'https://github.com/Mr-wangyong/FragmentStack.git'   // Git仓库的url
-group = "com.mrwang.Fragmenttack" // Maven Group ID for the artifact，一般填你唯一的包名
-install {
-    repositories.mavenInstaller {
-        // This generates POM.xml with proper parameters
-        pom {
-            project {
-                packaging 'aar'
-                // Add your description here
-                name 'A package of the start mode of the Fragment easy to use library to facilitate the construction of a single Activity+ multi Fragment lightweight framework'  //项目描述
-                url siteUrl
-                // Set your license
-                licenses {
-                    license {
-                        name 'The Apache Software License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
-                developers {
-                    developer {
-                        id 'wangyong'       //填写开发者基本信息
-                        name 'mr-wangyong'
-                        email 'cwy545177162@163.com'
-                    }
-                }
-                scm {
-                    connection gitUrl
-                    developerConnection gitUrl
-                    url siteUrl
-                }
-
-            }
-        }
-    }
-}
-task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier = 'sources'
-}
-task javadoc(type: Javadoc) {
-    source = android.sourceSets.main.java.srcDirs
-    options.encoding = "utf-8"
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    //classpath += project.files(android.getBootClasspath().join(File.pathSeparator,configurations.compile.files))
-}
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
-afterEvaluate {
-    javadoc.classpath += files(android.libraryVariants.collect { variant ->
-        variant.javaCompile.classpath.files
-    })
-}
-
-artifacts {
-    archives javadocJar
-    archives sourcesJar
-}
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
-
-android.libraryVariants.all { variant ->
-    println variant.javaCompile.classpath.files
-    if(variant.name == 'release') { //我们只需 release 的 javadoc
-        task("generate${variant.name.capitalize()}Javadoc", type: Javadoc) {
-            // title = ''
-            // description = ''
-            source = variant.javaCompile.source
-            classpath = files(variant.javaCompile.classpath.files, project.android.getBootClasspath())
-            options {
-                encoding "utf-8"
-                links "http://docs.oracle.com/javase/7/docs/api/"
-                linksOffline "http://d.android.com/reference", "${android.sdkDirectory}/docs/reference"
-            }
-            exclude '**/BuildConfig.java'
-            exclude '**/R.java'
-        }
-        task("javadoc${variant.name.capitalize()}Jar", type: Jar, dependsOn: "generate${variant.name.capitalize()}Javadoc") {
-            classifier = 'javadoc'
-            from tasks.getByName("generate${variant.name.capitalize()}Javadoc").destinationDir
-        }
-        artifacts {
-            archives tasks.getByName("javadoc${variant.name.capitalize()}Jar")
-        }
-    }
-}
-
-bintray {
-    user = properties.getProperty("bintray.user")
-    key = properties.getProperty("bintray.apikey")
-    configurations = ['archives']
-    pkg {
-        repo = "maven"  //发布到Bintray的那个仓库里，默认账户有四个库，我们这里上传到maven库
-        name = "FragmentStacklibrary"  //发布到Bintray上的项目名字
-        websiteUrl = siteUrl
-        vcsUrl = gitUrl
-        licenses = ["Apache-2.0"]
-        project.version = "1.0.0"
-        publish = true
-        version {
-            // the 2 functions here, are building the version number
-            name = "1.0.0" // i.e. 1.0.0-SomeName
-            vcsTag = "1.0.0"  // 1.0.0
-            gpg {
-                // keys are uploaded
-                sign = true
-            }
-        }
-    }
-}
 
 
