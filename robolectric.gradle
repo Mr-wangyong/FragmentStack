@@ -1,0 +1,50 @@
+android.testOptions.unitTests.all {
+    // configure the set of classes for JUnit tests
+    include project.hasProperty("testFilter") ? "**/*${project.ext.testFilter}*Test.class" : '**/*Test.class'
+    exclude '**/espresso/**/*.class'
+
+    // configure max heap size of the test JVM
+    maxHeapSize = '2048m'
+
+    // configure the test JVM arguments
+    jvmArgs '-XX:MaxPermSize=512m', '-XX:-UseSplitVerifier'
+
+    // Specify max number of processes (default is 1)
+    maxParallelForks = 1
+
+    // Specify max number of test classes to execute in a test process
+    // before restarting the process (default is unlimited)
+    forkEvery = 150
+
+    // configure whether failing tests should fail the build
+    ignoreFailures false
+
+    testLogging {
+        events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
+    }
+}
+
+ext {
+    assertjVersion = '1.1.1'
+    robolectricVersion = '3.0'
+}
+
+dependencies {
+    testCompile "org.robolectric:robolectric:$robolectricVersion",
+            "org.robolectric:shadows-support-v4:$robolectricVersion",
+            'org.mockito:mockito-core:1.9.5+',
+            'junit:junit:4.12'
+    testCompile("com.squareup.assertj:assertj-android:$assertjVersion") {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
+    testCompile("com.squareup.assertj:assertj-android-support-v4:$assertjVersion") {
+        exclude group: 'com.android.support', module: 'support-annotations'
+        exclude group: 'com.android.support', module: 'support-v4'
+        // see robolectric/robolectric#1633
+    }
+    testCompile("com.squareup.assertj:assertj-android-appcompat-v7:$assertjVersion") {
+        exclude group: 'com.android.support', module: 'support-annotations'
+        exclude group: 'com.android.support', module: 'appcompat-v7'
+        // see robolectric/robolectric#1633
+    }
+}
