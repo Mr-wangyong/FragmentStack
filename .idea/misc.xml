@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="EclipseCodeFormatter">
+    <option name="defaultSettings" value="true" />
+    <option name="formatter" value="ECLIPSE" />
+    <option name="id" value="1489116791972" />
+    <option name="importOrderConfigFilePath" value="$PROJECT_DIR$/../Setting/AndroidCodeStyle/import_order.importorder" />
+    <option name="importOrderFromFile" value="true" />
+    <option name="name" value="default" />
+    <option name="pathToConfigFileJava" value="$PROJECT_DIR$/../Setting/AndroidCodeStyle/AndroidCodeStyle.xml" />
+    <option name="selectedJavaProfile" value="Android Code Style" />
+  </component>
   <component name="EntryPointsManager">
     <entry_points version="2.0" />
   </component>
