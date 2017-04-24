@@ -34,7 +34,7 @@
 	}
 	
 	项目的build.gradle加入
-	compile 'com.mrwang.Fragmenttack:stacklibrary:1.0.0'
+	compile 'com.github.Mr-wangyong:FragmentStack:v1.0.2'
 
 然后,在你的项目中,MainActivity继承RootActivity
 
